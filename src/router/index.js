@@ -1,27 +1,48 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Login from '../components/Login.vue'
+import Exercises from '../components/Exercises.vue'
+import Exercise from '../components/Exercise.vue'
+// import axios from 'axios'
 
 Vue.use(VueRouter)
 
-const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
-]
+// the function continues in the second panel, not enough space here
 
-const router = new VueRouter({
-  routes
-})
+function createRouter (state) {
+  /* async function beforeEnter (to, from, next) {
+    try {
+      const { data: user } = await axios.get('http://localhost:3000/api/me')
+      state.user = user
+      next()
+    } catch (err) {
+      console.log('ERROR in beforeEnter', err)
+      next('/') // redirect to login component if user is not authenticated
+    }
+  } */
 
-export default router
+  const routes = [
+    {
+      path: '/',
+      name: 'login',
+      component: Login
+    },
+    {
+      path: '/exercices',
+      name: 'exercises',
+      component: Exercises
+      // beforeEnter
+    },
+    {
+      path: '/exercises/:id',
+      name: 'exercise',
+      component: Exercise
+    }
+  ]
+
+  return new VueRouter({
+    routes
+  })
+}
+
+export default createRouter
