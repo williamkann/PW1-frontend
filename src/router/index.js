@@ -28,13 +28,13 @@ function createRouter (state) {
       component: Login
     },
     {
-      path: '/exercices',
+      path: '/exercises',
       name: 'exercises',
       component: Exercises
       // beforeEnter
     },
     {
-      path: '/exercises/:id',
+      path: '/exercise',
       name: 'exercise',
       component: Exercise
     }
