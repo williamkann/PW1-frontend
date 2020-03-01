@@ -18,9 +18,9 @@
       </v-btn>
     </v-toolbar>
     <v-list>
-      <v-list-item v-for="exercise in exercises" :key="exercise.title">
+      <v-list-item v-for="(exercise) in exercises" :key="exercise.title" @click="getExercise(exercise.id)">
         <v-list-item-content>
-          <v-list-item-title v-text="exercise.title"></v-list-item-title>
+          <v-list-item-title v-text="'Exercise ' + exercise.id + ': ' + exercise.title"></v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -31,10 +31,15 @@
 export default {
   async mounted () {
     try {
-      const resultGetMe = await this.axios.get('http://localhost:3000/api/v1/exercises')
-      console.log(resultGetMe.data)
+      const resultGetExercises = await this.axios.get('http://localhost:3000/api/v1/exercises')
+      console.log(resultGetExercises.data)
       console.log('Get exercises success')
-      this.exercises = resultGetMe.data
+      this.exercises = resultGetExercises.data
+
+      const resultGetMe = await this.axios.get('http://localhost:3000/api/v1/me')
+      console.log(resultGetMe.data)
+      console.log('Get Me success')
+      this.username = resultGetMe.data.email
     } catch (err) {
       console.log(err)
     }
@@ -42,20 +47,23 @@ export default {
 
   data () {
     return {
-      username: this.$route.params.username,
-      password: this.$route.params.password,
-      result: this.$route.params.id,
-      exercises: [
-        { title: 'Exercise 1' },
-        { title: 'Exercise 2' },
-        { title: 'Exercise 3' },
-        { title: 'Exercise 4' }
-      ]
+      username: '',
+      exercises: []
     }
   },
   methods: {
     createExercise: function () {
       this.$router.push({ name: 'exercise' })
+    },
+    async getExercise (id) {
+      try {
+        console.log(id)
+        const resultGetExercise = await this.axios.get('http://localhost:3000/api/v1/exercise/' + id)
+        console.log(resultGetExercise.data)
+        this.$router.push({ name: 'myExercise' }, { params: { id: 4 } })
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 

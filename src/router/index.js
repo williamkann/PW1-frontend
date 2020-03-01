@@ -37,6 +37,11 @@ function createRouter (state) {
       path: '/exercise',
       name: 'exercise',
       component: Exercise
+    },
+    {
+      path: '/exercise/:id',
+      name: 'myExercise',
+      component: Exercise
     }
   ]
 

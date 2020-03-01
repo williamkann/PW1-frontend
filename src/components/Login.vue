@@ -53,7 +53,7 @@ export default {
         this.$router.user = result.data
         this.loggedIn = true
         console.log(this.$router.user)
-        this.$router.push({ name: 'exercises', params: { username: username, password: password, id: this.$router.user } })
+        this.$router.push({ name: 'exercises' })
       } catch (err) {
         this.errorLogin = err
         console.log('Login error: ' + this.errorLogin)

@@ -1,16 +1,12 @@
 <template>
     <v-container>
-        <div>
-        <v-alert
-        outlined
-        >
         <v-row>
             <v-col cols="12" sm="2" md="6">
                 <h1>New exercise</h1>
             </v-col>
             <v-col cols="12" sm="2" md="2">
                 <div class="my-2">
-                    <v-btn text small>Save</v-btn>
+                    <v-btn text medium @click="save()">Save</v-btn>
                 </div>
             </v-col>
         </v-row>
@@ -24,7 +20,7 @@
             </v-col>
             <v-col cols="12" sm="2" md="4">
                 <v-select
-                class="pa-2" v-model="selected" :items="lang" :rules="[v => !!v || 'Language is required']" label="Language"
+                class="pa-2" v-model="lang" :items="lang" :rules="[v => !!v || 'Language is required']" label="Language"
                 required
                 />
             </v-col>
@@ -44,54 +40,49 @@
                     class="px-2 pb-2 ma-0"
                     justify="space-between"
                     >
-                    <v-btn-toggle
-                        v-model="formatting"
-                        multiple
-                    >
-                        <v-btn color="white">
-                        <v-icon>mdi-format-italic</v-icon>
-                        </v-btn>
-
-                        <v-btn color="white">
-                        <v-icon>mdi-format-bold</v-icon>
-                        </v-btn>
-
-                        <v-btn color="white">
-                        <v-icon>mdi-format-underline</v-icon>
-                        </v-btn>
-
-                        <v-btn color="white">
-                        <v-row
-                            align="center"
-                            class="flex-column"
-                            justify="center"
+                        <v-btn-toggle
+                            v-model="formatting"
+                            multiple
                         >
-                            <v-icon class="cols 12">mdi-format-color-text</v-icon>
+                            <v-btn color="white">
+                            <v-icon>mdi-format-italic</v-icon>
+                            </v-btn>
 
-                            <v-sheet
-                            tile
-                            style="margin-top: -4px;"
-                            height="4"
-                            width="26"
-                            color="purple"
-                            ></v-sheet>
-                        </v-row>
-                        </v-btn>
-                    </v-btn-toggle>
+                            <v-btn color="white">
+                            <v-icon>mdi-format-bold</v-icon>
+                            </v-btn>
 
-                    <v-btn-toggle v-model="alignment">
-                        <v-btn color="white">
-                        <v-icon>mdi-format-align-center</v-icon>
-                        </v-btn>
+                            <v-btn color="white">
+                            <v-icon>mdi-format-underline</v-icon>
+                            </v-btn>
 
-                        <v-btn color="white">
-                        <v-icon>mdi-format-align-left</v-icon>
-                        </v-btn>
+                            <v-btn color="white">
+                                <v-row align="center" class="flex-column" justify="center">
+                                    <v-icon class="cols 12">mdi-format-color-text</v-icon>
+                                    <v-sheet
+                                    tile
+                                    style="margin-top: -4px;"
+                                    height="4"
+                                    width="26"
+                                    color="black"
+                                    ></v-sheet>
+                                </v-row>
+                            </v-btn>
+                        </v-btn-toggle>
 
-                        <v-btn color="white">
-                        <v-icon>mdi-format-align-right</v-icon>
-                        </v-btn>
-                    </v-btn-toggle>
+                        <v-btn-toggle v-model="alignment">
+                            <v-btn color="white">
+                            <v-icon>mdi-format-align-center</v-icon>
+                            </v-btn>
+
+                            <v-btn color="white">
+                            <v-icon>mdi-format-align-left</v-icon>
+                            </v-btn>
+
+                            <v-btn color="white">
+                            <v-icon>mdi-format-align-right</v-icon>
+                            </v-btn>
+                        </v-btn-toggle>
                     </v-row>
 
                     <v-sheet
@@ -124,14 +115,14 @@
             </v-col>
             <v-col cols="12" sm="2" md="6">
                 <h2>Tests</h2>
-                <div id="editor" class="exercise-editor-ace-editor"></div>
+                 <div id="editor" class="exercise-editor-ace-editor"></div>
             </v-col>
         </v-row>
         <v-row>
             <v-col cols="12" sm="2" md="6">
                 <v-row>
                     <h2>Template</h2>
-                    <div id="editor" class="exercise-editor-ace-editor"></div>
+                    <div id="template" class="exercise-editor-ace-editor"></div>
                 </v-row>
             </v-col>
             <v-col cols="12" sm="2" md="6">
@@ -158,8 +149,6 @@
                 </div>
             </v-col>
         </v-row>
-    </v-alert>
-  </div>
   </v-container>
 </template>
 
@@ -169,6 +158,7 @@
  position: relative;
  height: 20rem;
  font-size: 120%;
+ will-change: auto;
 }
 </style>
 
@@ -185,27 +175,47 @@ export default {
     this.editor.setTheme('ace/theme/monokai')
     this.editor.session.setMode(`ace/mode/${this.lang}`)
 
+    this.template = ace.edit('template')
+    this.template.setTheme('ace/theme/monokai')
+    this.template.session.setMode(`ace/mode/${this.lang}`)
+
     this.sandbox = ace.edit('sandbox')
     this.sandbox.setTheme('ace/theme/monokai')
     this.sandbox.session.setMode(`ace/mode/${this.lang}`)
+    console.log('finished mounted')
   },
 
   data: () => ({
-    editor: '',
-    sandbox: '',
-    instruction: '',
-    selected: '',
-    lang: ['Python', 'C', 'C++'],
+    template: null,
+    sandbox: null,
+    editor: null,
+    instructions: '',
+    lang: ['python', 'c', 'JavaScript'],
     title: '',
-    tests: this.editor.getValue(),
-    solution: '',
-    template_regions: [],
-    template_regions_rw: [],
-    difficulty: '',
-    score: ''
+    tests: '',
+    solution: 'dde',
+    templateRegions: ['temp'],
+    templateRegionsRw: [0],
+    difficulty: 0,
+    score: 0,
+    creation_date: new Date()
   }),
   methods: {
-    exercises: [{ instruction: '', lang: 'python', title: '', tests: '', solution: '', template_regions: [], template_regions_rw: [], difficulty: 0, score: 0 }]
+    async save () {
+      // eslint-disable-next-line camelcase
+      const { instructions, lang, title, tests, solution, templateRegions, templateRegionsRw, difficulty, score, creation_date } = this
+      try {
+        const result = await this.axios.post('http://localhost:3000/api/v1/exercise', {
+          instructions, lang, title, tests, solution, templateRegions, templateRegionsRw, difficulty, score, creation_date
+        })
+        this.loggedIn = true
+        console.log(result)
+        this.$router.push({ name: 'exercises' })
+      } catch (err) {
+        this.errorLogin = err
+        console.log('Login error: ' + this.errorLogin)
+      }
+    }
 
   }
 }
